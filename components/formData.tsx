@@ -1,6 +1,6 @@
 "use client";
 
-import { promise, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { usernameSchema } from "@/lib/UsernameValidator";
 import { fetchDataForAllYears } from "@/lib/GetContributions";
 import { calculateGitHubWorth } from "@/lib/utils";
 import ShowCard from "./showCard";
-import { values } from "lodash";
+import { ModeToggle } from "./themeToggle";
 
 export function ProfileForm() {
   const [data, setData] = useState({});
@@ -88,26 +88,6 @@ export function ProfileForm() {
           ),
         };
 
-        // const promise = new Promise((resolve, reject) => {
-        //   if (
-        //     finalData !== "undefined" &&
-        //     finalData !== null &&
-        //     storeStars &&
-        //     createData
-        //   ) {
-        //     resolve(finalData);
-        //   } else {
-        //     reject("Error");
-        //   }
-        // });
-
-        // toast.promise(promise, {
-        //   loading: "Loading...",
-        //   success: "Successfully Loaded",
-        //   error: "Error!",
-        //   position: "top-center",
-        // });
-
         setData(createData);
         console.log({ createData });
 
@@ -137,96 +117,6 @@ export function ProfileForm() {
       error: "Error!",
       position: "top-center",
     });
-
-    // try {
-    //   if (values.username === "") return;
-    //   const myUsername: string = values.username.includes("@")
-    //     ? values.username.replace("@", "")
-    //     : values.username;
-
-    //   const data = await fetch(`https://api.github.com/users/${myUsername}`);
-    //   const finalData = await data.json();
-
-    //   if (finalData?.message === "Not Found") {
-    //     form.reset();
-    //     return toast.error("Sorry, No Username Found !", {
-    //       style: {
-    //         background: "crimson",
-    //         color: "white",
-    //       },
-    //       position: "top-center",
-    //     });
-    //   } else if (finalData?.type === "Organization") {
-    //     form.reset();
-    //     return toast.error("Sorry, Organisation username not allowed!", {
-    //       position: "top-center",
-    //     });
-    //   }
-    //   const getStar = await fetch(
-    //     `https://api.github.com/users/${myUsername}/repos?per_page=1000`
-    //   );
-    //   const storeStars: Array<any> = await getStar.json();
-    //   // Calculate the total stars
-    //   if (Array.isArray(storeStars)) {
-    //     const totalStars = storeStars.reduce(
-    //       (acc: any, repo: any) => acc + repo.stargazers_count,
-    //       0
-    //     );
-
-    //     const hereis = await fetchDataForAllYears(myUsername);
-
-    //     const createData = {
-    //       avatar: finalData.avatar_url,
-    //       fullname: finalData.name,
-    //       username: finalData.login,
-    //       followers: finalData.followers || 0,
-    //       stars: totalStars || 0,
-    //       contribuitions: hereis.total,
-    //       estimated: calculateGitHubWorth(
-    //         hereis.total,
-    //         finalData.followers,
-    //         totalStars
-    //       ),
-    //     };
-
-    //     // const promise = new Promise((resolve, reject) => {
-    //     //   if (
-    //     //     finalData !== "undefined" &&
-    //     //     finalData !== null &&
-    //     //     storeStars &&
-    //     //     createData
-    //     //   ) {
-    //     //     resolve(finalData);
-    //     //   } else {
-    //     //     reject("Error");
-    //     //   }
-    //     // });
-
-    //     // toast.promise(promise, {
-    //     //   loading: "Loading...",
-    //     //   success: "Successfully Loaded",
-    //     //   error: "Error!",
-    //     //   position: "top-center",
-    //     // });
-
-    //     setData(createData);
-    //     console.log({ createData });
-
-    //     setGenerated(true);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error("Rate Limit Reached! Try after some time", {
-    //     style: {
-    //       background: "crimson",
-    //       color: "white",
-    //     },
-    //     position: "top-center",
-    //   });
-    // } finally {
-    //   setLoading(false);
-    // }
-    // console.log({ data });
   };
 
   return (
@@ -254,21 +144,27 @@ export function ProfileForm() {
               </FormItem>
             )}
           />
-          <Button className="" variant={"default"} disabled={Loading}>
-            {Loading ? (
-              <>
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please wait
-              </>
-            ) : (
-              "💲 Generate Worth"
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button className="" variant={"default"} disabled={Loading}>
+              {Loading ? (
+                <>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please
+                  wait
+                </>
+              ) : (
+                "💲 Generate Worth"
+              )}
+            </Button>
+            <ModeToggle />
+          </div>
         </form>
       </Form>
 
       {/* Loder and showCard(userInfo) */}
       {Loading ? (
-        <> Please wait calculating your worth 👀...</>
+        <p className="text-lg font-semibold">
+          Please wait calculating your worth 👀...
+        </p>
       ) : generated ? (
         <div className="w-full flex flex-col items-center px-2">
           <ShowCard {...data} />

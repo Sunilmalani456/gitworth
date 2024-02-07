@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { ReloadIcon } from "@radix-ui/react-icons";
-
+import { toPng } from "html-to-image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 interface ShowCardProps {
   avatar?: string;
@@ -27,11 +28,51 @@ const ShowCard = ({
   estimated,
 }: ShowCardProps) => {
   const [loading, setLoading] = useState(false);
+  const elementRef = useRef(null);
+
+  //  FUNCTION TO CONVERT HTML TO IMAGE
+  const htmlToImageConvert = () => {
+    setLoading(true);
+    try {
+      if (elementRef.current) {
+        toPng(elementRef.current, { cacheBust: false })
+          .then((dataUrl) => {
+            const link = document.createElement("a");
+            link.download = "gitEstimate.png";
+            link.href = dataUrl;
+            link.click();
+          })
+          .catch((err) => {
+            // console.log(err);
+            toast.error("Sorry, Downloading limit reached!", {
+              style: {
+                background: "crimson",
+                color: "white",
+              },
+              position: "top-center",
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    } catch (error) {
+      toast.error("Error converting to image !", {
+        style: {
+          background: "crimson",
+          color: "white",
+        },
+        position: "top-center",
+      });
+      console.error("Error converting to image:", error);
+    }
+  };
+
   return (
     <>
       <div
         className="flex flex-col bg-white dark:dark:bg-zinc-900 w-full max-w-[520px] p-5 sm:p-5 rounded-md shadow-md border dark:border-gray-600 max-sm:gap-3"
-        // ref={elementRef}
+        ref={elementRef}
       >
         {/* HEAD  */}
         <div className="flex flex-row justify-between w-full sm:p-5">
@@ -101,11 +142,7 @@ const ShowCard = ({
         </span>
       </div>
       <div className="flex justify-center mt-3">
-        <Button
-          disabled={loading}
-
-          //   onClick={htmlToImageConvert}
-        >
+        <Button disabled={loading} onClick={htmlToImageConvert}>
           {loading ? (
             <>
               <ReloadIcon className="mr-2 h-4 w-4 animate-spin" /> Please wait
