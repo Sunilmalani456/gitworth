@@ -7,6 +7,7 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import { toPng } from "html-to-image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface ShowCardProps {
   avatar?: string;
@@ -120,11 +121,9 @@ const ShowCard = ({
           </div>
         </div>
         {/* FOOTER  */}
-        <div className="py-2 px-2 sm:px-5 w-full flex max-sm:h-[70px] h-[100px] relative">
-          {/* 🔴 SUGGESTION -> Due to my vercel free tire end of 1000 images  unoptimized= true 👇   */}
-
+        <div className="py-2 px-2 sm:px-5 w-full flex max-sm:h-[70px] h-[100px] relative mt-2">
           <Image
-            src={`https://ghchart.rshah.org/sunilmalani456`}
+            src={`https://ghchart.rshah.org/${username}`}
             alt="Contribution Graph"
             fill={true}
             loading="eager"
@@ -133,13 +132,21 @@ const ShowCard = ({
           />
         </div>
 
-        <div className="flex flex-col mt-1 gap-0.5">
-          <span className="w-full text-center text-xl">{estimated} $</span>
+        <div className="flex flex-col gap-0.5 mt-2">
+          <span className="w-full text-center text-xl sm:text-2xl">
+            {estimated} $
+          </span>
           <span className="w-full text-center text-xs">Estimated Worth</span>
         </div>
         <span className="w-full text-center mt-2 text-xs">
           Get yours at gitworth.vercel.app
         </span>
+        <Link
+          href="https://github.com/Sunilmalani456/gitworth"
+          className="w-full text-center mt-2 text-xs"
+        >
+          Made By 💖
+        </Link>
       </div>
       <div className="flex justify-center mt-3">
         <Button disabled={loading} onClick={htmlToImageConvert}>
